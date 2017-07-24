@@ -1,0 +1,8 @@
+{% extends 'base.html'%}
+{% block content %}
+	{% for projeto in projetos %}
+		<p>{{projeto.nome}}</p>
+		<p>{{projeto.descricao}}</p>
+		<hr>
+	{% endfor %}
+{% endblock %}
