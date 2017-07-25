@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+	<h2>Crie um novo projeto</h2>
+	<form method="post" action="{% url 'novo_projeto' %}">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" name="Criar Novo Projeto" value="Criar">
+	</form>
+{% endblock %}

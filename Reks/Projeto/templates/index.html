@@ -1,5 +1,7 @@
 {% extends 'base.html'%}
 {% block content %}
+	Crie um novo proejto:<a href="{% url 'novo_projeto'%}">Criar Novo Projeto</a>
+	<h2>Lista de Projetos:</h2>
 	{% for projeto in projetos %}
 		<a href="{% url 'exibir_projeto' projeto.id%}"><p>{{projeto.nome}}</p></a>
 		<p>{{projeto.descricao}}</p>

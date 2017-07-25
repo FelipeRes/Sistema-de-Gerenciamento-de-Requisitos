@@ -1,0 +1,27 @@
+{% extends 'base.html'%}
+{% block content %}
+	<h2>{{projeto.nome}}</h2>
+	<p>{{projeto.descricao}}</p>
+
+	<p>Tipos</p>
+	{% for tipo in tipos %}
+		{{tipo.nome}}
+	{% endfor %}
+	<p>Adiconar Tipo</p>
+	<form method="post" action="{% url 'adicionar_tipo'%}">
+		{% csrf_token %}
+		{{formTipo.as_p}}
+		<input type="submit" name="Novo tipo">
+	</form>
+
+	{% for prioridade in prioridades %}
+		{{prioridade.label}}
+	{% endfor %}
+	<p>Adiconar Prioridade</p>
+
+	{% for complexidade in complexidades %}
+		{{complexidade.label}}
+	{% endfor %}
+	<p>Adiconar Complexidade</p>
+
+{% endblock %}

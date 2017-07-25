@@ -3,8 +3,7 @@
 	<h2>Criando novo proejto</h2>
 		<form method="post" action="{% url 'novo_projeto' %}">
 		{% csrf_token %}
-			<input placeholder="Nome do Projeto *" id = "nome" autofocus required name='nome'>
-			<input placeholder="Descrição" id = "descricao" autofocus required name='descricao'>
+			{{ from.as_p}}
 			<button type = "submit">Criar</button>
 			{% if form.errors %}
 				<div>

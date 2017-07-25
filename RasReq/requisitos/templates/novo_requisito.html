@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+	<form action="novo_requisito" method="post">
+	{% csrf_token %}
+	<input placeholder="Nome do Requisito" autofocus required name="nome"><br>
+	<input type='textarea' placeholder="Especificação" autofocus required name="nome"><br>
+	<select>
+  		<option value="A">Aberto</option>
+  		<option value="F">Fechado</option>
+  		<option value="C" selected>Cancelado</option>
+  		<option value="E">Espera</option>
+	</select><br>
+	<p>Selecione o tipo:</p>
+	{% for tipo in tipos %}
+		<input type="checkbox" name="{{tipo}}" value="{{tipo}}">{{tipo}}
+	{% endfor %}
+	<p>Selecione a prioridade:</p>
+	{% for prioridade in prioridades %}
+		<input type="radio" name="prioridade" value="{{prioridade.nome}}"> {{prioridade.nome}}<br>
+	{% endfor %}
+	<p>Selecione a complexidade:</p>
+	{% for complexidade in complexidades %}
+		<input type="radio" name="complexidade" value="{{complexidade.nome}}"> {{complexidade.nome}}<br>
+	{% endfor %}
+	</form>
+{% endblock %}
