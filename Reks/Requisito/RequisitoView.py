@@ -9,19 +9,24 @@ class RequisitoNovo(View):
 	template = 'requisito.html'
 
 	def get(self, request, projeto_id):
-		form = RequisitoForm(projeto_id)
 		projeto = Projeto.objects.get(id=projeto_id)
 		data = projeto.propiedades()
-		data['form'] = form
 		return render(request, self.template, data)
 
 	def post(self, request, projeto_id):
-		form = RequisitoForm(projeto_id,request.POST)
-		projeto = Projeto.objects.get(id=projeto_id)
 		template = 'requisito.html'
-		if form.is_valid():
-			requisito = form.save()
-			requisito.projeto = projeto
-			requisito.save()
-			return HttpResponse('deu certo')
-		return HttpResponse(form._errors)
+		projeto = Projeto.objects.get(id=projeto_id)
+		dados = request.POST
+		requisito = Requisito(nome= request.POST.get('nome'),
+			especificacao= request.POST.get('especificacao'),
+			projeto=projeto,
+			estado= request.POST.get('estado'))
+		requisito.save()
+		list_tipo = []
+		for tipo in request.POST.getlist('tipo'):
+			list_tipo.append(Tipo.objects.filter(projeto=projeto, nome=tipo))
+		requisito.tipo = list_tipo
+		requisito.prioridade = Prioridade.objects.filter(projeto=projeto,label=request.POST.get('prioridade'))
+		requisito.complexidade= complexidade.objects.filter(projeto=projeto,label=request.POST.get('complexidade'))
+		requisito.save()
+		return HttpResponse('deu certo')
