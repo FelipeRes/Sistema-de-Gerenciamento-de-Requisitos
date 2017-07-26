@@ -11,4 +11,9 @@ class Requisito(models.Model):
 	tipo = models.ManyToManyField(Tipo)
 	prioridade = models.ForeignKey(Prioridade, on_delete=models.CASCADE)
 	complexidade = models.ForeignKey(Complexidade, on_delete=models.CASCADE)
-	dependencias = models.ManyToManyField("self")
+	dependencias = models.ManyToManyField("self", related_name='dependentes')
+
+	@property
+	def dependenciasData(self):
+		return self.dependencias.all()
+

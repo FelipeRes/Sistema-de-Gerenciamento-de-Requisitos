@@ -1,0 +1,111 @@
+{% extends 'projeto_base.html' %}
+{% block body %}
+    <div >
+    <h2>Configurações</h2>
+    <div id="tipos" class="panel panel-default">
+    <p>Tipos</p>
+    {% for tipo in tipos %}
+        {{tipo.nome}}
+            <button id="deletar_tipo" onclick="deletar_tipo({{tipo.id}})">X</button><br>
+    {% endfor %}
+          <input type="text" name="tipo" placeholder="Novo Tipo" id="tipo">
+          <button type="button" id="adicionar_tipo" class="btn btn-primary">Adicionar</button>
+    </div>
+
+    <div id="Prioridades" class="panel panel-default">
+    <p>Prioridades</p>
+    {% for prioridade in prioridades %}
+        {{prioridade.label}}-{{prioridade.valor}} </th>
+        <button id="deletar_prioridade" onclick="deletar_prioridade({{prioridade.id}})">X</button><br>
+    {% endfor %}
+        <input type="text" name="prioridade" placeholder="Nova Prioridade" id="prioridade">
+        <input type="number" min="1" name="prioridade" placeholder="valor" id="prioridade_valor" value="1">
+        <button type="button" id="adicionar_prioridade" class="btn btn-primary">Adicionar</button>
+    </div>
+
+    <div id="Complexidades" class="panel panel-default">
+    <p>Complexidades</p>
+       {% for complexidade in complexidades %}
+            {{complexidade.label}} : {{complexidade.valor}}
+            <button id="deletar_complexidade" onclick="deletar_complexidade({{complexidade.id}})">X</button><br>
+       {% endfor %}
+        <input type="text" name="complexidade" placeholder="Nova Complexidade" id="complexidade">
+        <input type="number" min="1" name="complexidade" placeholder="valor" id="complexidade_valor" value="1">
+        <button type="button" id="adicionar_complexidade" class="btn btn-primary">Adicionar</button>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+   <script>
+    function deletar_tipo(tipo_id){
+        $.post({
+            type: "get", 
+            url : "{% url 'deletar_tipo' %}" ,
+            data : {
+                tipo_id : tipo_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : location.reload()
+            });
+    }
+    $("#adicionar_tipo").click(function(){
+        $.post({
+            type: "get", 
+            url : "{% url 'adicionar_tipo' %}" ,
+            data : {
+                nome : $("#tipo").val(),
+                projeto_id : {{ projeto.id }}
+            },
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            success : location.reload(),
+        });
+    });
+    function deletar_prioridade(prioridade_id){
+        $.post({
+            type: "get", 
+            url : "{% url 'deletar_prioridade' %}" ,
+            data : {
+                prioridade_id : prioridade_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success : location.reload()
+            });
+    }
+    $("#adicionar_prioridade").click(function(){
+        $.post({
+            type: "get", 
+            url : "{% url 'adicionar_prioridade' %}" ,
+            data : {
+                label : $("#prioridade").val(),
+                valor : $("#prioridade_valor").val(),
+                projeto_id : {{ projeto.id }},
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success : location.reload(),
+        });
+    });
+    function deletar_complexidade(complexidade_id){
+        $.post({
+            type: "get", 
+            url : "{% url 'deletar_complexidade' %}" ,
+            data : {
+                complexidade_id : complexidade_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : location.reload()
+            });
+    }
+    $("#adicionar_complexidade").click(function(){
+        $.post({
+            type: "get", 
+            url : "{% url 'adicionar_complexidade' %}" ,
+            data : {
+                label : $("#complexidade").val(),
+                valor : $("#complexidade_valor").val(),
+                projeto_id : {{ projeto.id }}
+            },
+            success : location.reload(),
+        });
+    });
+  </script>
+{% endblock %}

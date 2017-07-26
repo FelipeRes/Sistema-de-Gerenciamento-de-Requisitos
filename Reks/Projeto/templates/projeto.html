@@ -1,146 +1,117 @@
-{% extends 'base.html' %}
-{% block content %}
-	<h2>{{ projeto.nome }}</h2>
-	<p>{{ projeto.descricao}}</p>
-
-    <div id="Requisitos" class="panel panel-default">
-    <div class="panel-heading"><p>Requisitos</p></div>
+{% extends 'projeto_base.html' %}
+{% block body %}
+    </div class="col-sm-4">
+    <h2>Requisitos</h2>
+    <div id="Requisitos" class=".col-sm-4">
+    <div class="col-sm-2">
+        <div class="w3-card-4" style="margin: 5px 5px 5px 5px; padding: 10px 10px 10px 10px">
+            <div class="card-block">
+                <h3 class="card-title">Novo Requisito</h3>
+                <div class="card-text">
+                    <a href="{% url 'novo_requisito' projeto.id %}"><button class="btn btn-default"><h4>+</h4></button></a>
+                </div>
+            </div>
+        </div>
+    </div>
     {% for requisito in requisitos %}
-        <div class="panel-default">
-            <div class="panel-heading">
-               <a href="{% url 'exibir_requisito' projeto_id=projeto.id requisito_id=requisito.id %}">
-               {{requisito.nome}}</a>
+        <div class="col-sm-2">
+        <div  
+        {% if requisito.estado == 'Espera' %} class="w3-card-4 w3-gray"
+        {% elif requisito.estado == 'Aberto'%} class="w3-card-4"
+        {% elif requisito.estado == 'Fechado'%} class="w3-card-4 w3-green"
+        {% elif requisito.estado == 'Cancelado'%} class="w3-card-4 w3-red"
+        {% else %} class="w3-card-4"
+        {% endif %} 
+        style="margin: 5px 5px 5px 5px; padding: 10px 10px 10px 10px">
+
+        <div class="card-block">
+                <a href="{% url 'exibir_requisito' projeto_id=projeto.id requisito_id=requisito.id %}">
+                <h3 class="card-title">{{requisito.nome}}</h3>
+                </a>
+            <div class="card-text">
+                {{requisito.especificacao}}<br>
             </div>
-            <div class="panel-default">
-                {{requisito.especificacao}}
+<!-- Estado -->
+                <button type="button" class="btn btn-dft" color='black' data-toggle="modal" data-target="#estado{{requisito.id}}">    {{requisito.estado}}
+                </button>
+                <div id="estado{{requisito.id}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog" style="color: black;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Selecione um estado</h4>
+                            </div>
+                            <div class="modal-body" color='black'>
+                                <form method="post" action="{% url 'alterar_estado' projeto_id=projeto.id requisito_id=requisito.id %}">
+                                {% csrf_token %}
+                                <input type="radio" name="estado" value="Espera" required>Espera
+                                <input type="radio" name="estado" value="Aberto" required>Aberto
+                                <input type="radio" name="estado" value="Fechado" required>Fechado
+                                <input type="radio" name="estado" value="Cancelado" required>Cancelado
+                                <input type="submit" name="Salvar">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!-- Prioridade -->
+                 <button type="button" class="btn btn-dft" color='black' data-toggle="modal" data-target="#prioridade{{requisito.id}}">Prioridade:{{requisito.prioridade}}
+                </button><br>
+                <div id="prioridade{{requisito.id}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog" style="color: black;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Selecione uma prioridade</h4>
+                            </div>
+                            <div class="modal-body" color='black'>
+                                <form method="post" action="{% url 'alterar_prioridade' projeto_id=projeto.id requisito_id=requisito.id %}">
+                                {% csrf_token %}
+                                <select name="prioridade">
+                                {% for prioridade in prioridades %}
+                                     <option>{{prioridade.label}}</option>
+                                {% endfor %}
+                                </select>
+                                <input type="submit" name="Salvar">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!-- Complexidade -->
+                {{requisito.complexidade}}<br>
+
+<!-- Dependencias-->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dependencia{{requisito.id}}">Dependências</button>
+            <div id="dependencia{{requisito.id}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Requisitos dependentes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'alterar_dependencia' projeto_id=projeto.id requisito_id=requisito.id %}">
+                            {% csrf_token %}
+                            {% for requisito_dependentes in requisitos%}
+                                {% if requisito_dependentes.id != requisito.id %}
+                                   <input type="checkbox" name="reqs" value={{requisito_dependentes.id}}
+                                   {% if requisito_dependentes in requisito.dependenciasData %}
+                                        checked
+                                    {% endif %}>
+                                   {{requisito_dependentes.nome}} <br>
+                                {% endif %}
+                            {% endfor %}
+                            <input type="submit" name="salvar" value="Salvar Dependências">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        </div>
         </div>
     {% endfor %}
     </div>
-
-	<div id="tipos" class="panel panel-default">
-	<div class="panel-heading"><p>Tipos</p></div>
-    <table style="width:100%" class="table">
-	{% for tipo in tipos %}
-        <tr>
-			<th>{{tipo.nome}} </th>
-            <th><button id="deletar_tipo" onclick="deletar_tipo({{tipo.id}})">X</button></th>
-        </tr>
-	{% endfor %}
-        <tr>
-		  <th><input type="text" name="tipo" placeholder="Novo Tipo" id="tipo"></th>
-		  <th><button type="button" id="adicionar_tipo">Adicionar</button></th>
-        </tr>
-    </table>
-	</div>
-
-	<div id="Prioridades" class="panel panel-default">
-	<div class="panel-heading"><p>Prioridades</p></div>
-    <table style="width:100%" class="table">
-	{% for prioridade in prioridades %}
-		<tr>
-			<th>{{prioridade.label}}-{{prioridade.valor}} </th>
-            <th><button id="deletar_prioridade" onclick="deletar_prioridade({{prioridade.id}})">X</button></th>
-		</tr>
-	{% endfor %}
-        <tr>
-		<th><input type="text" name="prioridade" placeholder="Nova Prioridade" id="prioridade">
-		<input type="number" min="1" name="prioridade" placeholder="valor" id="prioridade_valor" value="1"></th>
-		<th><button type="button" id="adicionar_prioridade">Adicionar</button></th>
-        </tr>
-    </table>
-	</div>
-
-	<div id="Complexidades" class="panel panel-default">
-	<div class="panel-heading"><p>Complexidades</p></div>
-    <table style="width:100%" class="table">
-	   {% for complexidade in complexidades %}
-            <tr>
-			<th>{{complexidade.label}} : {{complexidade.valor}}</th>
-            <th><button id="deletar_complexidade" onclick="deletar_complexidade({{complexidade.id}})">X</button></th>
-            </tr>
-	   {% endfor %}
-		<tr>
-        <th><input type="text" name="complexidade" placeholder="Nova Complexidade" id="complexidade">
-		<input type="number" min="1" name="complexidade" placeholder="valor" id="complexidade_valor" value="1"></th>
-		<th><button type="button" id="adicionar_complexidade">Adicionar</button></th>
-        </tr>
-    </table>
-	</div>
-
 {% endblock %}
 
-{% block javascript %}
-   <script>
-    function deletar_tipo(tipo_id){
-        $.post({
-            type: "get", 
-            url : "{% url 'deletar_tipo' %}" ,
-            data : {
-                tipo_id : tipo_id,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success : location.reload()
-            });
-    }
-    $("#adicionar_tipo").click(function(){
-        $.post({
-            type: "get", 
-            url : "{% url 'adicionar_tipo' %}" ,
-            data : {
-                nome : $("#tipo").val(),
-                projeto_id : {{ projeto.id }}
-            },
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            success : location.reload(),
-        });
-    });
-    function deletar_prioridade(prioridade_id){
-        $.post({
-            type: "get", 
-            url : "{% url 'deletar_prioridade' %}" ,
-            data : {
-                prioridade_id : prioridade_id,
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-            },
-            success : location.reload()
-            });
-    }
-    $("#adicionar_prioridade").click(function(){
-        $.post({
-            type: "get", 
-            url : "{% url 'adicionar_prioridade' %}" ,
-            data : {
-                label : $("#prioridade").val(),
-                valor : $("#prioridade_valor").val(),
-                projeto_id : {{ projeto.id }},
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-            },
-            success : location.reload(),
-        });
-    });
-    function deletar_complexidade(complexidade_id){
-        $.post({
-            type: "get", 
-            url : "{% url 'deletar_complexidade' %}" ,
-            data : {
-                complexidade_id : complexidade_id,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success : location.reload()
-            });
-    }
-    $("#adicionar_complexidade").click(function(){
-        $.post({
-            type: "get", 
-            url : "{% url 'adicionar_complexidade' %}" ,
-            data : {
-                label : $("#complexidade").val(),
-                valor : $("#complexidade_valor").val(),
-                projeto_id : {{ projeto.id }}
-            },
-            success : location.reload(),
-        });
-    });
-  </script>
-{% endblock %}

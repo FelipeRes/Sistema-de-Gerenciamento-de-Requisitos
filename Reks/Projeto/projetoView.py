@@ -64,3 +64,7 @@ def DeletarComplexidade(request):
 	complexidade = Complexidade.objects.get(id=request.GET.get("complexidade_id"))
 	complexidade.delete()
 	return render(request,'projeto.html')
+
+def Editar(request, projeto_id):
+	projeto = Projeto.objects.get(id=projeto_id)
+	return render(request, 'projeto_editar.html', projeto.propiedades())

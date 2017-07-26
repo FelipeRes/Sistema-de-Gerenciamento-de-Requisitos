@@ -30,3 +30,27 @@ class RequisitoExibir(View):
 	def get(self, request, projeto_id, requisito_id):
 		requisito = Requisito.objects.get(id=requisito_id)
 		return render(request, self.template, {'requisito':requisito})
+
+def AlterarDependencias(request, projeto_id, requisito_id):
+	requisito = Requisito.objects.get(id=requisito_id)
+	projeto = requisito.projeto
+	requisito.dependencias.clear()
+	requisito.save()
+	for requisito_dependente_id in request.POST.getlist('reqs'):
+		requisito.dependencias.add(Requisito.objects.get(id=requisito_dependente_id))
+	return redirect('exibir_projeto', projeto.id)
+
+def AlterarEstado(request, projeto_id, requisito_id):
+	requisito = Requisito.objects.get(id=requisito_id)
+	projeto = requisito.projeto
+	requisito.estado = request.POST.get('estado')
+	requisito.save()
+	return redirect('exibir_projeto', projeto.id)
+
+def AlterarPrioridade(request, projeto_id, requisito_id):
+	requisito = Requisito.objects.get(id=requisito_id)
+	projeto = requisito.projeto
+	requisito.prioridade = Prioridade.objects.filter(projeto=projeto,label=request.POST.get('prioridade'))[0]
+	requisito.save()
+	return redirect('exibir_projeto', projeto.id)
+

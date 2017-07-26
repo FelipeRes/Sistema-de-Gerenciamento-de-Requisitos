@@ -8,7 +8,7 @@ urlpatterns = [
 	url(r'^projeto/novo$', ProjetoNovo.as_view(), name='novo_projeto'),
 	url(r'^projeto/(?P<projeto_id>\d+)$', ProjetoExibir.as_view(), name='exibir_projeto'),
 	url(r'^projeto/(?P<projeto_id>\d+)/', include('Requisito.urls')),
-	url(r'^projeto/(?P<projeto_id>\d+)/editar$', views.index, name='editar_projeto'),
+	url(r'^projeto/(?P<projeto_id>\d+)/editar$', projetoView.Editar, name='editar_projeto'),
 	url(r'^ajax/adicionarTipo$', projetoView.AdicionarTipo, name='adicionar_tipo'),
 	url(r'^ajax/deletarTipo$', projetoView.DeletarTipo, name='deletar_tipo'),
 	url(r'^ajax/adicionarPrioridade$', projetoView.AdicionarPrioridade, name='adicionar_prioridade'),
