@@ -8,7 +8,8 @@ class Projeto(models.Model):
 		return {'projeto' : self,
 		'tipos': self.tipos.all(), 
 		'prioridades': self.prioridades.all(), 
-		'complexidades':self.complexidades.all()}
+		'complexidades':self.complexidades.all(),
+		'requisitos':self.requisitos.all().order_by('-prioridade__valor')}
 	def __str__(self):
 		return self.nome
 

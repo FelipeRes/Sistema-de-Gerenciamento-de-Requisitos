@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+	<h2>Novo Requisito</h2>
+	<form method="post" action="{% url 'novo_requisito' projeto.id %}">
+		{% csrf_token %}
+		<p><label>Nome:</label> 
+		<input type="text" name="nome" required autofocus><br>
+		</p>
+
+		<p><label>Especificação:</label> 
+		<textarea type="text" name="especificacao" cols="40" rows="10" maxlength="512" required></textarea>
+		</p>
+
+		<p><label>Estado:</label>
+		<select name='estado'>
+			<option>Aberto</option>
+			<option>Fechado</option>
+			<option>Cancelado</option>
+			<option>Espera</option>
+		</select>
+		</p>
+
+		<p><label>Tipos:</label>
+		{% for tipo in tipos %}
+			<input type="checkbox" name="tipo" value="{{tipo.nome}}"> {{tipo.nome}}
+		{% endfor %}
+		</p>
+
+		<p><label>Prioridade:</label>
+		<select name='prioridade'>
+		{% for prioridade in prioridades %}
+			<option>{{prioridade.label}}</option>
+		{% endfor %}
+		</select>
+		</p>
+
+		<p><label>Complexidade:</label>
+		<select name="complexidade">
+		{% for complexidade in complexidades %}
+			<option>{{complexidade.label}}</option>
+		{% endfor %}
+		</select>
+		</p>
+
+		<input type="submit" name="enviar">
+	</form>
+{% endblock %}

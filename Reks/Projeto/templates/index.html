@@ -1,10 +1,18 @@
 {% extends 'base.html'%}
 {% block content %}
-	Crie um novo proejto:<a href="{% url 'novo_projeto'%}">Criar Novo Projeto</a>
-	<h2>Lista de Projetos:</h2>
-	{% for projeto in projetos %}
-		<a href="{% url 'exibir_projeto' projeto.id%}"><p>{{projeto.nome}}</p></a>
-		<p>{{projeto.descricao}}</p>
-		<hr>
-	{% endfor %}
+<div class="col-lg-12">
+	<a href="{% url 'novo_projeto'%}"><button>Criar Novo Projeto</button></a>
+	<div class="panel-heading">
+		<h2>Lista de Projetos:</h2>
+	</div>
+		{% for projeto in projetos %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="{% url 'exibir_projeto' projeto.id%}"><h3>{{projeto.nome}}</h3></a>
+			</div>
+			<p>{{projeto.descricao}}</p>
+		</div>
+		{% endfor %}
+	</div>
+</div>
 {% endblock %}

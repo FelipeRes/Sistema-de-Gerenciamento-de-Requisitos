@@ -6,7 +6,7 @@ from Requisito.forms import *
 from django import forms
 
 class RequisitoNovo(View):
-	template = 'requisito.html'
+	template = 'novo_requisito.html'
 
 	def get(self, request, projeto_id):
 		projeto = Projeto.objects.get(id=projeto_id)
@@ -14,19 +14,19 @@ class RequisitoNovo(View):
 		return render(request, self.template, data)
 
 	def post(self, request, projeto_id):
-		template = 'requisito.html'
 		projeto = Projeto.objects.get(id=projeto_id)
 		dados = request.POST
 		requisito = Requisito(nome= request.POST.get('nome'),
 			especificacao= request.POST.get('especificacao'),
 			projeto=projeto,
 			estado= request.POST.get('estado'))
+		requisito.prioridade = Prioridade.objects.filter(projeto=projeto,label=request.POST.get('prioridade'))[0]
+		requisito.complexidade = Complexidade.objects.filter(projeto=projeto,label=request.POST.get('complexidade'))[0]
 		requisito.save()
-		list_tipo = []
-		for tipo in request.POST.getlist('tipo'):
-			list_tipo.append(Tipo.objects.filter(projeto=projeto, nome=tipo))
-		requisito.tipo = list_tipo
-		requisito.prioridade = Prioridade.objects.filter(projeto=projeto,label=request.POST.get('prioridade'))
-		requisito.complexidade= complexidade.objects.filter(projeto=projeto,label=request.POST.get('complexidade'))
-		requisito.save()
-		return HttpResponse('deu certo')
+		return redirect('exibir_projeto',projeto_id)
+
+class RequisitoExibir(View):
+	template = 'requisito.html'
+	def get(self, request, projeto_id, requisito_id):
+		requisito = Requisito.objects.get(id=requisito_id)
+		return render(request, self.template, {'requisito':requisito})

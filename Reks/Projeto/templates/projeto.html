@@ -3,121 +3,144 @@
 	<h2>{{ projeto.nome }}</h2>
 	<p>{{ projeto.descricao}}</p>
 
-	<div id="tipos">
-	<p>Tipos</p>
+    <div id="Requisitos" class="panel panel-default">
+    <div class="panel-heading"><p>Requisitos</p></div>
+    {% for requisito in requisitos %}
+        <div class="panel-default">
+            <div class="panel-heading">
+               <a href="{% url 'exibir_requisito' projeto_id=projeto.id requisito_id=requisito.id %}">
+               {{requisito.nome}}</a>
+            </div>
+            <div class="panel-default">
+                {{requisito.especificacao}}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+	<div id="tipos" class="panel panel-default">
+	<div class="panel-heading"><p>Tipos</p></div>
+    <table style="width:100%" class="table">
 	{% for tipo in tipos %}
-		<div>
-			{{tipo.nome}}<button id="deletar_tipo" onclick="deletar_tipo({{tipo.id}})">X</button>
-		</div>
+        <tr>
+			<th>{{tipo.nome}} </th>
+            <th><button id="deletar_tipo" onclick="deletar_tipo({{tipo.id}})">X</button></th>
+        </tr>
 	{% endfor %}
-		<input type="text" name="tipo" placeholder="Novo Tipo" id="tipo">
-		<button type="button" id="adicionar_tipo">Adicionar</button>
+        <tr>
+		  <th><input type="text" name="tipo" placeholder="Novo Tipo" id="tipo"></th>
+		  <th><button type="button" id="adicionar_tipo">Adicionar</button></th>
+        </tr>
+    </table>
 	</div>
 
-	<div id="Prioridades">
-	<p>Prioridades</p>
+	<div id="Prioridades" class="panel panel-default">
+	<div class="panel-heading"><p>Prioridades</p></div>
+    <table style="width:100%" class="table">
 	{% for prioridade in prioridades %}
-		<div>
-			{{prioridade.label}}-{{prioridade.valor}}<button id="deletar_prioridade" onclick="deletar_prioridade({{prioridade.id}})">X</button>
-		</div>
+		<tr>
+			<th>{{prioridade.label}}-{{prioridade.valor}} </th>
+            <th><button id="deletar_prioridade" onclick="deletar_prioridade({{prioridade.id}})">X</button></th>
+		</tr>
 	{% endfor %}
-		<input type="text" name="prioridade" placeholder="Nova Prioridade" id="prioridade">
-		<input type="number" min="1" name="prioridade" placeholder="valor" id="prioridade_valor" value="1">
-		<button type="button" id="adicionar_prioridade">Adicionar</button>
+        <tr>
+		<th><input type="text" name="prioridade" placeholder="Nova Prioridade" id="prioridade">
+		<input type="number" min="1" name="prioridade" placeholder="valor" id="prioridade_valor" value="1"></th>
+		<th><button type="button" id="adicionar_prioridade">Adicionar</button></th>
+        </tr>
+    </table>
 	</div>
 
-	<div id="Complexidades">
-	<p>Complexidades</p>
-	{% for complexidade in complexidades %}
-		<div>
-			{{complexidade.label}}-{{complexidade.valor}}<button id="deletar_complexidade" onclick="deletar_complexidade({{complexidade.id}})">X</button>
-		</div>
-	{% endfor %}
-		<input type="text" name="complexidade" placeholder="Nova Complexidade" id="complexidade">
-		<input type="number" min="1" name="complexidade" placeholder="valor" id="complexidade_valor" value="1">
-		<button type="button" id="adicionar_complexidade">Adicionar</button>
+	<div id="Complexidades" class="panel panel-default">
+	<div class="panel-heading"><p>Complexidades</p></div>
+    <table style="width:100%" class="table">
+	   {% for complexidade in complexidades %}
+            <tr>
+			<th>{{complexidade.label}} : {{complexidade.valor}}</th>
+            <th><button id="deletar_complexidade" onclick="deletar_complexidade({{complexidade.id}})">X</button></th>
+            </tr>
+	   {% endfor %}
+		<tr>
+        <th><input type="text" name="complexidade" placeholder="Nova Complexidade" id="complexidade">
+		<input type="number" min="1" name="complexidade" placeholder="valor" id="complexidade_valor" value="1"></th>
+		<th><button type="button" id="adicionar_complexidade">Adicionar</button></th>
+        </tr>
+    </table>
 	</div>
 
 {% endblock %}
 
 {% block javascript %}
-  <script>
-  	function deletar_tipo(tipo_id){
-  		$.post({
-  			type: "get", 
-    		url : "{% url 'deletar_tipo' %}" ,
-    		data : {
-    			tipo_id : tipo_id,
-    			csrfmiddlewaretoken: '{{ csrf_token }}'
-    		},
-    		success : location.reload()
-	    	});
-  	}
+   <script>
+    function deletar_tipo(tipo_id){
+        $.post({
+            type: "get", 
+            url : "{% url 'deletar_tipo' %}" ,
+            data : {
+                tipo_id : tipo_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : location.reload()
+            });
+    }
     $("#adicionar_tipo").click(function(){
-    	$.post({
-    		type: "get", 
-    		url : "{% url 'adicionar_tipo' %}" ,
-    		data : {
-    			nome : $("#tipo").val(),
-    			projeto_id : {{ projeto.id }}
-    		},
-    		csrfmiddlewaretoken: '{{ csrf_token }}',
-    		success : location.reload(),
-    			//function(data) { 
-    			//var html = $(data).filter('#tipos').html();
-    			//alert(html);
-                //$('#tipos').html(html);
-    			//}
-	    });
+        $.post({
+            type: "get", 
+            url : "{% url 'adicionar_tipo' %}" ,
+            data : {
+                nome : $("#tipo").val(),
+                projeto_id : {{ projeto.id }}
+            },
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            success : location.reload(),
+        });
     });
-    //======================================================
     function deletar_prioridade(prioridade_id){
-  		$.post({
-  			type: "get", 
-    		url : "{% url 'deletar_prioridade' %}" ,
-    		data : {
-    			prioridade_id : prioridade_id,
-    			csrfmiddlewaretoken: '{{ csrf_token }}',
-    		},
-    		success : location.reload()
-	    	});
-  	}
+        $.post({
+            type: "get", 
+            url : "{% url 'deletar_prioridade' %}" ,
+            data : {
+                prioridade_id : prioridade_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success : location.reload()
+            });
+    }
     $("#adicionar_prioridade").click(function(){
-    	$.post({
-    		type: "get", 
-    		url : "{% url 'adicionar_prioridade' %}" ,
-    		data : {
-    			label : $("#prioridade").val(),
-    			valor : $("#prioridade_valor").val(),
-    			projeto_id : {{ projeto.id }},
-    			csrfmiddlewaretoken: '{{ csrf_token }}',
-    		},
-    		success : location.reload(),
-	    });
+        $.post({
+            type: "get", 
+            url : "{% url 'adicionar_prioridade' %}" ,
+            data : {
+                label : $("#prioridade").val(),
+                valor : $("#prioridade_valor").val(),
+                projeto_id : {{ projeto.id }},
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success : location.reload(),
+        });
     });
-    //======================================================
     function deletar_complexidade(complexidade_id){
-  		$.post({
-  			type: "get", 
-    		url : "{% url 'deletar_complexidade' %}" ,
-    		data : {
-    			complexidade_id : complexidade_id,
-    			csrfmiddlewaretoken: '{{ csrf_token }}'
-    		},
-    		success : location.reload()
-	    	});
-  	}
+        $.post({
+            type: "get", 
+            url : "{% url 'deletar_complexidade' %}" ,
+            data : {
+                complexidade_id : complexidade_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success : location.reload()
+            });
+    }
     $("#adicionar_complexidade").click(function(){
-    	$.post({
-    		type: "get", 
-    		url : "{% url 'adicionar_complexidade' %}" ,
-    		data : {
-    			label : $("#complexidade").val(),
-    			valor : $("#complexidade_valor").val(),
-    			projeto_id : {{ projeto.id }}
-    		},
-    		success : location.reload(),
-	    });
+        $.post({
+            type: "get", 
+            url : "{% url 'adicionar_complexidade' %}" ,
+            data : {
+                label : $("#complexidade").val(),
+                valor : $("#complexidade_valor").val(),
+                projeto_id : {{ projeto.id }}
+            },
+            success : location.reload(),
+        });
     });
   </script>
 {% endblock %}
