@@ -13,6 +13,17 @@ class Projeto(models.Model):
 	def __str__(self):
 		return self.nome
 
+	@property
+	def maiorClasse(self):
+		lista = []
+		for d in self.requisitos.all():
+			lista.append(d.classe)
+		gambs = []
+		for i in range(max(lista)):
+			gambs.append(i+1)
+		return gambs
+
+
 class Tipo(models.Model):
 	nome = models.CharField(max_length=125)
 	projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE, related_name='tipos')

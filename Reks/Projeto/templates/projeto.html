@@ -1,20 +1,14 @@
 {% extends 'projeto_base.html' %}
 {% block body %}
-    </div class="col-sm-4">
+    <div id="Requisitos" style="margin: 10px 10px 10px 30px">
     <h2>Requisitos</h2>
-    <div id="Requisitos" class=".col-sm-4">
-    <div class="col-sm-2">
-        <div class="w3-card-4" style="margin: 5px 5px 5px 5px; padding: 10px 10px 10px 10px">
-            <div class="card-block">
-                <h3 class="card-title">Novo Requisito</h3>
-                <div class="card-text">
-                    <a href="{% url 'novo_requisito' projeto.id %}"><button class="btn btn-default"><h4>+</h4></button></a>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Requisito -->
+    {% for i in projeto.maiorClasse %}
+    <div class="w3-col m2 l2">
+    <h3>Classe{{i}}</h3>
     {% for requisito in requisitos %}
-        <div class="col-sm-2">
+        {% if requisito.classe == i %}
+        <div class="w3-row">
         <div  
         {% if requisito.estado == 'Espera' %} class="w3-card-4 w3-gray"
         {% elif requisito.estado == 'Aberto'%} class="w3-card-4"
@@ -25,14 +19,16 @@
         style="margin: 5px 5px 5px 5px; padding: 10px 10px 10px 10px">
 
         <div class="card-block">
-                <a href="{% url 'exibir_requisito' projeto_id=projeto.id requisito_id=requisito.id %}">
-                <h3 class="card-title">{{requisito.nome}}</h3>
-                </a>
+            <div class="row" id=cabecalho style="padding: 0px 10px 0px 10px">
+                <div class="w3-col m6 w3-center">n:{{requisito.nivel}}</div>
+                <div class="w3-col m6 w3-center">i:{{requisito.impacto}}</div>
+            </div>
+            <h3 class="card-title">{{requisito.nome}}</h3>
             <div class="card-text">
-                {{requisito.especificacao}}<br>
+                {{requisito.especificacao}}
             </div>
 <!-- Estado -->
-                <button type="button" class="btn btn-dft" color='black' data-toggle="modal" data-target="#estado{{requisito.id}}">    {{requisito.estado}}
+                <button type="button" class="w3-button w3-padding-small" color='black' data-toggle="modal" data-target="#estado{{requisito.id}}" style="margin: 3px 3px 3px 3px">{{requisito.estado}}
                 </button>
                 <div id="estado{{requisito.id}}" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="color: black;">
@@ -54,7 +50,7 @@
                     </div>
                 </div>
 <!-- Prioridade -->
-                 <button type="button" class="btn btn-dft" color='black' data-toggle="modal" data-target="#prioridade{{requisito.id}}">Prioridade:{{requisito.prioridade}}
+                 <button type="button" class="w3-button w3-padding-small" color='black' data-toggle="modal" data-target="#prioridade{{requisito.id}}" style="margin: 3px 3px 3px 3px">{{requisito.prioridade}}
                 </button><br>
                 <div id="prioridade{{requisito.id}}" class="modal fade" role="dialog">
                     <div class="modal-dialog" style="color: black;">
@@ -77,10 +73,31 @@
                     </div>
                 </div>
 <!-- Complexidade -->
-                {{requisito.complexidade}}<br>
+                <button type="button" class="w3-button w3-padding-small" color='black' data-toggle="modal" data-target="#complexidade{{requisito.id}}" style="margin: 3px 3px 3px 3px">{{requisito.complexidade}}
+                </button><br>
+                <div id="complexidade{{requisito.id}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog" style="color: black;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Selecione uma Complexidade</h4>
+                            </div>
+                            <div class="modal-body" color='black'>
+                                <form method="post" action="{% url 'alterar_complexidade' projeto_id=projeto.id requisito_id=requisito.id %}">
+                                {% csrf_token %}
+                                <select name="complexidade">
+                                {% for complexidade in complexidades %}
+                                     <option>{{complexidade.label}}</option>
+                                {% endfor %}
+                                </select>
+                                <input type="submit" name="Salvar">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 <!-- Dependencias-->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dependencia{{requisito.id}}">Dependências</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dependencia{{requisito.id}}" style="margin: 3px 3px 3px 3px">Dependências</button>
             <div id="dependencia{{requisito.id}}" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -92,11 +109,13 @@
                             {% csrf_token %}
                             {% for requisito_dependentes in requisitos%}
                                 {% if requisito_dependentes.id != requisito.id %}
+                                {% if requisito_dependentes.classe <= requisito.classe %}
                                    <input type="checkbox" name="reqs" value={{requisito_dependentes.id}}
                                    {% if requisito_dependentes in requisito.dependenciasData %}
                                         checked
                                     {% endif %}>
                                    {{requisito_dependentes.nome}} <br>
+                                {% endif %}
                                 {% endif %}
                             {% endfor %}
                             <input type="submit" name="salvar" value="Salvar Dependências">
@@ -111,7 +130,24 @@
         </div>
         </div>
         </div>
+        {% endif %}
     {% endfor %}
+    </div>
+    {% endfor %}
+    <div class="w3-col m2 l2">
+        <h3 style="padding: 0px 0px 0px 20px">Novo Requisito</h3>
+        <div class="w3-card-4" style="margin: 5px 5px 5px 5px; padding: 10px 10px 10px 10px">
+            <div class="card-block">
+                <div class="card-text">
+                    <a href="{% url 'novo_requisito' projeto.id %}">
+                        <button class="w3-button w3-block">
+                        <h2>+</h2>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 {% endblock %}
 

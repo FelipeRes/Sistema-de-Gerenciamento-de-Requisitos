@@ -54,3 +54,10 @@ def AlterarPrioridade(request, projeto_id, requisito_id):
 	requisito.save()
 	return redirect('exibir_projeto', projeto.id)
 
+def AlterarComplexidade(request, projeto_id, requisito_id):
+	requisito = Requisito.objects.get(id=requisito_id)
+	projeto = requisito.projeto
+	requisito.complexidade = Complexidade.objects.filter(projeto=projeto,label=request.POST.get('complexidade'))[0]
+	requisito.save()
+	return redirect('exibir_projeto', projeto.id)
+
