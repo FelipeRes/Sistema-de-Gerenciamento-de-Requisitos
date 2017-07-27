@@ -3,16 +3,21 @@ from django.views.generic.base import View
 from Requisito.models import *
 from Projeto.models import *
 from Requisito.forms import *
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django import forms
 
 class RequisitoNovo(View):
 	template = 'novo_requisito.html'
 
+	@method_decorator(login_required(login_url='/login/'))
 	def get(self, request, projeto_id):
 		projeto = Projeto.objects.get(id=projeto_id)
 		data = projeto.propiedades()
 		return render(request, self.template, data)
 
+
+	@method_decorator(login_required(login_url='/login/'))
 	def post(self, request, projeto_id):
 		projeto = Projeto.objects.get(id=projeto_id)
 		dados = request.POST
@@ -27,10 +32,13 @@ class RequisitoNovo(View):
 
 class RequisitoExibir(View):
 	template = 'requisito.html'
+
+	@method_decorator(login_required(login_url='/login/'))
 	def get(self, request, projeto_id, requisito_id):
 		requisito = Requisito.objects.get(id=requisito_id)
 		return render(request, self.template, {'requisito':requisito})
 
+@login_required(login_url='/login/')
 def AlterarDependencias(request, projeto_id, requisito_id):
 	requisito = Requisito.objects.get(id=requisito_id)
 	projeto = requisito.projeto
@@ -40,6 +48,7 @@ def AlterarDependencias(request, projeto_id, requisito_id):
 		requisito.dependencias.add(Requisito.objects.get(id=requisito_dependente_id))
 	return redirect('exibir_projeto', projeto.id)
 
+@login_required(login_url='/login/')
 def AlterarEstado(request, projeto_id, requisito_id):
 	requisito = Requisito.objects.get(id=requisito_id)
 	projeto = requisito.projeto
@@ -47,6 +56,7 @@ def AlterarEstado(request, projeto_id, requisito_id):
 	requisito.save()
 	return redirect('exibir_projeto', projeto.id)
 
+@login_required(login_url='/login/')
 def AlterarPrioridade(request, projeto_id, requisito_id):
 	requisito = Requisito.objects.get(id=requisito_id)
 	projeto = requisito.projeto
@@ -54,6 +64,7 @@ def AlterarPrioridade(request, projeto_id, requisito_id):
 	requisito.save()
 	return redirect('exibir_projeto', projeto.id)
 
+@login_required(login_url='/login/')
 def AlterarComplexidade(request, projeto_id, requisito_id):
 	requisito = Requisito.objects.get(id=requisito_id)
 	projeto = requisito.projeto

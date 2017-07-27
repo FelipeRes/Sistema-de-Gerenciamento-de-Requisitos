@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+	<div class="w3-col m1 w3-center"><p></p></div>
+	<div class="w3-col m3 w3-center">
+	<form class = "form-signin" method="post" action="{% url 'registrar' %}">
+	{% csrf_token %}	
+	{{ form.as_p }}
+	<button type = "submit" class="btn btn-lg btn-primary btn-block" >Registrar</button>
+	{% if form.errors %}
+		<div class="alert alert-danger">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
+			{{form.non_field_errors}}
+		</div>
+	{% endif %}
+	</div>
+</form>
+<div class="w3-col m8 w3-center"><p></p></div>
+</div>
+{% endblock %}

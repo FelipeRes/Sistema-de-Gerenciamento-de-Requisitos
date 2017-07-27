@@ -12,7 +12,19 @@
 </head>
 <body>
 		<div class = "header" style="padding: 10px 10px 10px 10px">
-			<a href="{% url 'index'%}"><h1>Sistema de gerenciamento de requisitos</h1></a>
+			<div class="row">
+                <div class="w3-col m6 w3-center">
+                	<a href="{% url 'index'%}"><h1>Sistema de gerenciamento de requisitos</h1></a>
+                </div>
+                <div class="w3-col m6 w3-center">
+                	{% if request.user.is_authenticated %}
+                		<p>{{ request.user.username }}</p>
+                		<a href="{% url 'logout' %}">Logout</a>
+					{% else %}
+						<a href="{% url 'login' %}">Login</a>
+					{% endif %}
+                </div>
+            </div>
 		</div>
 		<div class="row content">
 			{% block content %}

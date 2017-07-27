@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="w3-col m1"><p></p></div>
+	<div class="w3-col m3">
+	<form class="form-signin" role="form" action="{% url 'login' %}" method="post">
+		{% csrf_token %}
+		<h2 class="form-signin-heading">Login</h2>
+		<input type="text" id="id_username" name="username" class="form-control" placeholder="Email" required autofocus>
+		<input type="password" id="id_password" name="password" class="form-control" placeholder="Senha" required>
+		<button class="btn btn-lg btn-primary btn-block" type="submit" value="Login">Login</button>
+		{% if form.errors %}
+			<div class="alert alert-danger">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> 
+				
+
+				Por favor, verifique o Email e/ou Senha informados
+			</div>
+		{% endif %}
+		<a href="{% url 'registrar' %}">registre-se</a>
+	</form>
+	</div>
+{% endblock %}
