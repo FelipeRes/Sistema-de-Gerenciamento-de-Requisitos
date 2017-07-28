@@ -1,9 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User 
 
 # Create your models here.
 class Projeto(models.Model):
 	nome = models.CharField(max_length=45)
 	descricao = models.TextField(max_length=512)
+	usuario = models.ForeignKey(User, related_name = 'administra', on_delete = models.CASCADE)
 	def propiedades(self):
 		return {'projeto' : self,
 		'tipos': self.tipos.all(), 
@@ -19,6 +21,8 @@ class Projeto(models.Model):
 		for d in self.requisitos.all():
 			lista.append(d.classe)
 		gambs = []
+		if len(lista) == 0:
+			return gambs
 		for i in range(max(lista)):
 			gambs.append(i+1)
 		return gambs

@@ -5,5 +5,5 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login/')
 def index(request):
-	projetos = Projeto.objects.all()
+	projetos = request.user.administra.all()
 	return render(request, 'index.html', {'projetos':projetos})

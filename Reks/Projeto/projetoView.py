@@ -26,7 +26,17 @@ class ProjetoNovo(View):
 		form = ProjetoFormulario(request.POST)
 		if form.is_valid():
 			dados = form.cleaned_data
-			projeto = Projeto.objects.create(nome = dados['nome'],descricao = dados['descricao'])
+			projeto = Projeto.objects.create(nome = dados['nome'],descricao = dados['descricao'],usuario=request.user)
+			projeto.save()
+			tipo_default = Tipo(nome='default', projeto=projeto)
+			tipo_default.save()
+			prioridade_default = Prioridade(label='default', valor=1, projeto=projeto)
+			prioridade_default.save()
+			complexidade_default = Complexidade(label='default', valor=1, projeto=projeto)
+			complexidade_default.save()
+			projeto.tipos.add(tipo_default)
+			projeto.prioridades.add(prioridade_default)
+			projeto.complexidades.add(complexidade_default)
 			projeto.save()
 			return redirect('index')
 		return render(request, self.template, {'form' : form})

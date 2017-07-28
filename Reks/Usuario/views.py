@@ -7,12 +7,8 @@ from django.utils.decorators import method_decorator
 
 class RegistrarUsuario(View):
 	template = 'registrar.html'
-
-	@method_decorator(login_required(login_url='/login/'))
 	def get(self, request):
 		return render(request, self.template, {"form": UserCreationForm() })
-
-	@method_decorator(login_required(login_url='/login/'))
 	def post(self, request):
 		form = UserCreationForm(request.POST)
 		if form.is_valid():

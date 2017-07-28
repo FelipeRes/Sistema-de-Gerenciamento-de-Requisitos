@@ -5,3 +5,4 @@ class ProjetoFormulario(ModelForm):
 	class Meta:
 		model = Projeto
 		fields = ['nome', 'descricao']
+		exclude = ['user']
