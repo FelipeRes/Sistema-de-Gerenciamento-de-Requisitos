@@ -1,8 +1,0 @@
-{% extends 'base.html'%}
-{% block content %}
-	{% for projeto in projetos %}
-		<a href="{% url 'exibir_projeto' projeto.id%}"><p>{{projeto.nome}}</p></a>
-		<p>{{projeto.descricao}}</p>
-		<hr>
-	{% endfor %}
-{% endblock %}
